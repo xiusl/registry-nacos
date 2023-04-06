@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"os"
 
 	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/kitex-contrib/registry-nacos/nacos"
@@ -110,6 +111,9 @@ func (n *nacosRegistry) Register(info *registry.Info) error {
 }
 
 func (n *nacosRegistry) getLocalIpv4Host() (string, error) {
+	if host := os.Getenv("HOST"); len(host) > 0 {
+		return fmt.Sprintf("%s:%d", host, port), nil
+	}
 	addr, err := net.InterfaceAddrs()
 	if err != nil {
 		return "", err
